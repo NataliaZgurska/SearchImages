@@ -1,67 +1,78 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+
 import ImageGallery from './components/ImageGallery/ImageGallery';
 import SearchForm from './components/SearchForm/SearchForm';
 import LoadMoreBtn from './components/LoadMoreBtn/LoadMoreBtn';
+import Loader from './components/Loader/Loader';
+import ErrorMessage from './components/ErrorMessage/ErrorMessage';
+import { getImagesByQuery } from './services/api';
+import ImageModal from './components/ImageModal/ImageModal';
 // import './App.css';
 
 function App() {
   const [images, setImages] = useState(null);
-  const [imagesArray, setImagesArray] = useState(null);
   const [query, setQuery] = useState('');
-  const [pageNumber, setPageNumber] = useState(1);
+  const [page, setPage] = useState(1);
+  const [btnLoadMore, setBtnLoadMore] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalImage, setModalImage] = useState('');
 
-  const currentOrientation = 'landscape';
-  const currentPage = Number(pageNumber);
-
-  const MY_ACCESS_KEY = 'r5X1Oa10oS9-BERhXbh0nWixL3GFYc5WhGNcDvhdj7k';
   useEffect(() => {
     if (query.length === 0) return;
-    async function fetchImages() {
-      const { data } = await axios.get(
-        'https://api.unsplash.com/search/photos?client_id=' +
-          MY_ACCESS_KEY +
-          '&page=' +
-          currentPage +
-          '&query=' +
-          query +
-          '&per_page=6' +
-          '&orientation=' +
-          currentOrientation
-      );
-      setImages(data.results);
-    }
+
+    const fetchImages = async () => {
+      try {
+        const data = await getImagesByQuery(query, page);
+        setImages(prevImages => [...prevImages, ...data.results]);
+        setBtnLoadMore(data.total_pages > page);
+      } catch (error) {
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
     fetchImages();
-  }, [query, currentPage]);
+  }, [query, page]);
 
   const onSetSearchQuery = searchTerm => {
     setQuery(searchTerm);
+    setIsLoading(true);
+    setIsError(false);
+    setImages([]);
   };
 
-  const onPageChange = newPage => {
-    setPageNumber(newPage);
-    // console.log('newPage: ', newPage);
+  const loadMore = () => {
+    setPage(prevPage => prevPage + 1);
   };
 
-  useEffect(() => {
-    if (currentPage === 1) {
-      setImagesArray(images);
-    } else {
-      setImagesArray(prevImagesArray => [...prevImagesArray, ...images]);
-    }
-  }, [images]);
-  console.log(imagesArray);
+  const openModal = id => {
+    setModalImage(images.filter(image => image.id === id));
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
 
   return (
     <>
-      <h2>Search picture by name</h2>
-      <SearchForm
-        onSetSearchQuery={onSetSearchQuery}
-        setPageNumber={setPageNumber}
-        setImagesArray={setImagesArray}
+      <SearchForm onSetSearchQuery={onSetSearchQuery} />
+      {isError && <ErrorMessage />}
+
+      <ImageGallery images={images} openModal={openModal} />
+      {/* {images.length > 0 && (
+        <ImageGallery images={images} openModal={openModal} />
+      )} */}
+
+      {isLoading && <Loader />}
+      {btnLoadMore && <LoadMoreBtn loadMore={loadMore} images={images} />}
+      <ImageModal
+        closeModal={closeModal}
+        modalIsOpen={modalIsOpen}
+        modalImage={modalImage}
       />
-      <ImageGallery images={imagesArray} />
-      <LoadMoreBtn pageNumber={pageNumber} onPageChange={onPageChange} />
     </>
   );
 }

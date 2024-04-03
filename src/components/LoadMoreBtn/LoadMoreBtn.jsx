@@ -1,11 +1,13 @@
-const LoadMoreBtn = ({ pageNumber, onPageChange }) => {
-  const handleSubmit = () => {
-    onPageChange(Number(pageNumber) + 1);
-  };
+import css from './LoadMoreBtn.module.css';
 
+const LoadMoreBtn = ({ loadMore, images }) => {
   return (
-    <div>
-      <button onClick={handleSubmit}>Load more</button>
+    <div className={css.btnContainer}>
+      {images.length > 0 && (
+        <button onClick={loadMore} type="button">
+          Load more
+        </button>
+      )}
     </div>
   );
 };

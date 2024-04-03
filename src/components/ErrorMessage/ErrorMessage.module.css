@@ -1,0 +1,8 @@
+.errorMessageText {
+  margin-top: 20px;
+  text-align: center;
+  color: blueviolet;
+  font-size: 30px;
+  font-weight: 600;
+  font-style: italic;
+}
