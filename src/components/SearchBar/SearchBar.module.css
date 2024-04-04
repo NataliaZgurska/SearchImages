@@ -1,0 +1,37 @@
+.headerContainer {
+  height: 40px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background-color: blue;
+}
+
+.formInput {
+  padding-left: 55px;
+  width: 300px;
+  height: 30px;
+  border-radius: 4px;
+  border: none;
+}
+.formInput:focus {
+  outline: none;
+}
+
+.form {
+  position: relative;
+}
+.formBtn {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+
+  background: none;
+  box-shadow: none;
+  border: none;
+
+  /* height: 30px;
+  width: 30px;
+  text-align: center; */
+}

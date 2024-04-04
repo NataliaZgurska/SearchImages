@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 
+import toast, { Toaster } from 'react-hot-toast';
 import ImageGallery from './components/ImageGallery/ImageGallery';
-import SearchForm from './components/SearchForm/SearchForm';
+import SearchBar from './components/SearchBar/SearchBar';
 import LoadMoreBtn from './components/LoadMoreBtn/LoadMoreBtn';
 import Loader from './components/Loader/Loader';
 import ErrorMessage from './components/ErrorMessage/ErrorMessage';
-import { getImagesByQuery } from './services/api';
 import ImageModal from './components/ImageModal/ImageModal';
+
+import { getImagesByQuery } from './services/api';
 // import './App.css';
 
 function App() {
@@ -58,10 +60,12 @@ function App() {
 
   return (
     <>
-      <SearchForm onSetSearchQuery={onSetSearchQuery} />
+      <SearchBar onSetSearchQuery={onSetSearchQuery} toast={toast} />
+
       {isError && <ErrorMessage />}
 
       <ImageGallery images={images} openModal={openModal} />
+
       {/* {images.length > 0 && (
         <ImageGallery images={images} openModal={openModal} />
       )} */}
@@ -73,6 +77,7 @@ function App() {
         modalIsOpen={modalIsOpen}
         modalImage={modalImage}
       />
+      <Toaster position="top-center" reverseOrder={true} />
     </>
   );
 }
