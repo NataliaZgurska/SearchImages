@@ -9,7 +9,6 @@ import ErrorMessage from './components/ErrorMessage/ErrorMessage';
 import ImageModal from './components/ImageModal/ImageModal';
 
 import { getImagesByQuery } from './services/api';
-// import './App.css';
 
 function App() {
   const [images, setImages] = useState(null);
@@ -29,6 +28,9 @@ function App() {
         const data = await getImagesByQuery(query, page);
         setImages(prevImages => [...prevImages, ...data.results]);
         setBtnLoadMore(data.total_pages > page);
+        if (data.total === 0) {
+          setIsError(true);
+        }
       } catch (error) {
         setIsError(true);
       } finally {
@@ -52,24 +54,19 @@ function App() {
   const openModal = id => {
     setModalImage(images.filter(image => image.id === id));
     setModalIsOpen(true);
+    document.body.classList.add('modal-open');
   };
 
   const closeModal = () => {
     setModalIsOpen(false);
+    document.body.classList.remove('modal-open');
   };
 
   return (
     <>
       <SearchBar onSetSearchQuery={onSetSearchQuery} toast={toast} />
-
-      {isError && <ErrorMessage />}
-
+      {isError && <ErrorMessage images={images} />}
       <ImageGallery images={images} openModal={openModal} />
-
-      {/* {images.length > 0 && (
-        <ImageGallery images={images} openModal={openModal} />
-      )} */}
-
       {isLoading && <Loader />}
       {btnLoadMore && <LoadMoreBtn loadMore={loadMore} images={images} />}
       <ImageModal

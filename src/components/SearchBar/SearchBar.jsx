@@ -5,7 +5,14 @@ const SearchBar = ({ onSetSearchQuery, toast }) => {
     e.preventDefault();
     const value = e.target.search.value;
     if (value.trim() === '') {
-      toast.error('Please enter search query');
+      toast.error('Please enter search query', {
+        icon: '🤔 ✍️',
+        style: {
+          borderRadius: '10px',
+          background: '#808080',
+          color: 'yellow',
+        },
+      });
       return;
     }
     onSetSearchQuery(value.trim());
