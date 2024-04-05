@@ -25,12 +25,10 @@ function App() {
 
     const fetchImages = async () => {
       try {
+        setIsLoading(true);
         const data = await getImagesByQuery(query, page);
         setImages(prevImages => [...prevImages, ...data.results]);
         setBtnLoadMore(data.total_pages > page);
-        if (data.total === 0) {
-          setIsError(true);
-        }
       } catch (error) {
         setIsError(true);
       } finally {
@@ -42,9 +40,9 @@ function App() {
 
   const onSetSearchQuery = searchTerm => {
     setQuery(searchTerm);
-    setIsLoading(true);
     setIsError(false);
     setImages([]);
+    setPage(1);
   };
 
   const loadMore = () => {
@@ -65,7 +63,7 @@ function App() {
   return (
     <>
       <SearchBar onSetSearchQuery={onSetSearchQuery} toast={toast} />
-      {isError && <ErrorMessage images={images} />}
+      {isError && <ErrorMessage />}
       <ImageGallery images={images} openModal={openModal} />
       {isLoading && <Loader />}
       {btnLoadMore && <LoadMoreBtn loadMore={loadMore} images={images} />}

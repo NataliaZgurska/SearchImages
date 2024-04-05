@@ -10,8 +10,8 @@ export const getImagesByQuery = async (query, page) => {
       page +
       '&query=' +
       query +
-      '&per_page=6'
+      '&per_page=12'
   );
-  console.log(data);
+
   return data;
 };

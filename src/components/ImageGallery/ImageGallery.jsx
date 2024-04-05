@@ -15,5 +15,6 @@ const ImageGallery = ({ images, openModal }) => {
     </ul>
   );
 };
-
 export default ImageGallery;
+
+// return <p>'Nothing was found. Try to change your request 🤷‍♀️'</p>;
